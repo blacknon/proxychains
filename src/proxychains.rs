@@ -35,7 +35,8 @@ impl ProxyChainsConf {
         let mut content = String::from("");
         file.read_to_string(&mut content)?;
         let conf: ProxyChainsConf = toml::from_str(&content).expect("Failed to parse");
-        // println!("{}",content); // debug
+        println!("{}",content); // debug
+        println!("{}",11111); // debug
         Ok(conf)
     }
 }
@@ -67,6 +68,7 @@ async fn strict(
     conf: &ProxyChainsConf,
 ) -> Result<TcpStream, Box<dyn Error>> {
     let first = conf.proxies.get(0).unwrap();
+    println!("{}",first.socket_addr.clone()); // debug
     let mut stream = TcpStream::connect(first.socket_addr).await?;
     connect_with_stream(
         &mut stream,
