@@ -236,11 +236,14 @@ fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t {
 // Hook read function to fill buffer with incoming data
 #[no_mangle]
 fn read(fd: c_int, buf: *mut c_void, count: size_t) -> ssize_t {
+    println!("{}","111");
+
     let c_read: fn(d: c_int, buf: *const c_void, count: size_t) -> ssize_t =
         unsafe { transmute(fn_ptr("read")) };
 
     // Check if reading from a socket
     if let Some(connection) = unsafe { (*CONNECTIONS).get_mut(&(fd as u32)) } {
+        println!("{}",3);
         let buffer: &mut [u8] =
             unsafe { std::slice::from_raw_parts_mut(buf as *mut u8, count as usize) };
 
@@ -251,6 +254,7 @@ fn read(fd: c_int, buf: *mut c_void, count: size_t) -> ssize_t {
 
         data.len() as isize
     } else {
+        println!("{}",4);
         c_read(fd, buf, count)
     }
 }
