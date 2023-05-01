@@ -184,7 +184,9 @@ fn connect(socket: c_int, address: *const sockaddr, len: socklen_t) -> c_int {
 
     // Obtain socket address
     let sa_data: [i8; 14] = unsafe { (*address).sa_data };
-    let socket_addr = SocketAddr::new(ip(&sa_data[2..6]).into(), port(sa_data[0], sa_data[1]));
+    let socket_addr: SocketAddr = SocketAddr::new(ip(&sa_data[2..6]).into(), port(sa_data[0], sa_data[1]));
+    println!("lib.rs: connect socket_addr.ip(): {}",socket_addr.ip().clone());
+
 
     unsafe {
         if !exists(socket_addr) && !is_proxy(&socket_addr) {
