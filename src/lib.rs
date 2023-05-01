@@ -204,6 +204,7 @@ fn connect(socket: c_int, address: *const sockaddr, len: socklen_t) -> c_int {
 // Hook write function to get outgoing data
 #[no_mangle]
 fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t {
+    println!("{}","000");
     let c_write: fn(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t =
         unsafe { transmute(fn_ptr("write")) };
 
