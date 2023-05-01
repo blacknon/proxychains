@@ -214,6 +214,8 @@ fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t {
             unsafe { std::slice::from_raw_parts_mut(buf as *mut u8, count as usize) };
         let content: Vec<u8> = Vec::from(content);
 
+        println!("{:?}",content.clone());
+
         // Redirect data to Connection instance
         if let Some(waker) = connection.get_reader_waker().clone() {
             if let Ok(_) = connection.get_reader_sender().send(content) {
