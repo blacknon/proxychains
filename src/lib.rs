@@ -21,11 +21,11 @@ use tokio::prelude::*;
 use tokio::{io::copy, runtime::Runtime};
 
 // Args
-#[derive(Debug, StructOpt)]
-struct Args {
-    #[structopt(parse(from_os_str), short, long, default_value = "config.toml")]
-    config: PathBuf,
-}
+// #[derive(Debug, StructOpt)]
+// struct Args {
+//     #[structopt(parse(from_os_str), short, long, default_value = "config.toml")]
+//     config: PathBuf,
+// }
 
 // Get function pointer
 pub unsafe fn fn_ptr(name: &str) -> *mut core::ffi::c_void {
@@ -124,13 +124,11 @@ extern "C" fn init() {
 
     std::thread::spawn(move || {
         // Parse args
-        let args: Args = Args::from_args();
+        // let args: Args = Args::from_args();
 
         // Initialize config
-        let conf = ProxyChainsConf::from_file(args.config.to_str().unwrap())
+        let conf = ProxyChainsConf::from_file("/tmp/config.toml")
             .expect("Failed to prase config file");
-
-        println!("{}",1);
 
         unsafe {
             CONFIG = transmute(Box::new(conf));

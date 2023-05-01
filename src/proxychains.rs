@@ -35,7 +35,7 @@ impl ProxyChainsConf {
         let mut content = String::from("");
         file.read_to_string(&mut content)?;
         let conf: ProxyChainsConf = toml::from_str(&content).expect("Failed to parse");
-        println!("{}",content); // debug
+        // println!("{}",content); // debug
         Ok(conf)
     }
 }
