@@ -210,6 +210,7 @@ fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t {
     // Check if write is called with a file descriptor that belongs to a socket connection
     // Prevent the default behavior and redirect data to Connection instance
     if let Some(connection) = unsafe { (*CONNECTIONS).get_mut(&(fd as u32)) } {
+        println!("1");
         let content: &mut [u8] =
             unsafe { std::slice::from_raw_parts_mut(buf as *mut u8, count as usize) };
         let content: Vec<u8> = Vec::from(content);
@@ -227,6 +228,7 @@ fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t {
 
         count as isize
     } else {
+        println!("2");
         c_write(fd, buf, count)
     }
 }
