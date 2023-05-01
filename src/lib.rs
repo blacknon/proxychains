@@ -129,6 +129,9 @@ extern "C" fn init() {
         // Initialize config
         let conf = ProxyChainsConf::from_file(args.config.to_str().unwrap())
             .expect("Failed to prase config file");
+
+        println!("{}",1);
+
         unsafe {
             CONFIG = transmute(Box::new(conf));
         }
