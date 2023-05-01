@@ -187,7 +187,7 @@ fn connect(socket: c_int, address: *const sockaddr, len: socklen_t) -> c_int {
     // Obtain socket address
     let sa_data: [i8; 14] = unsafe { (*address).sa_data };
     let socket_addr: SocketAddr = SocketAddr::new(ip(&sa_data[2..6]).into(), port(sa_data[0], sa_data[1]));
-    println!("lib.rs: connect socket_addr.ip(): {}",socket_addr.ip().clone());
+    println!("lib.rs: connect socket_addr.ip(): {}",socket_addr.ip().clone()); // debug
 
 
     unsafe {
@@ -206,21 +206,18 @@ fn connect(socket: c_int, address: *const sockaddr, len: socklen_t) -> c_int {
 // Hook write function to get outgoing data
 #[no_mangle]
 fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t {
-    let mut out = stdout();
-    writeln!(out, "000").unwrap();
-
     let c_write: fn(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t =
         unsafe { transmute(fn_ptr("write")) };
 
     // Check if write is called with a file descriptor that belongs to a socket connection
     // Prevent the default behavior and redirect data to Connection instance
     if let Some(connection) = unsafe { (*CONNECTIONS).get_mut(&(fd as u32)) } {
-        // println!("{}",1);
+        eprintln!("{}",1);
         let content: &mut [u8] =
             unsafe { std::slice::from_raw_parts_mut(buf as *mut u8, count as usize) };
         let content: Vec<u8> = Vec::from(content);
 
-        println!("{:?}",content.clone());
+        eprintln!("{:?}",content.clone()); // debug
 
         // Redirect data to Connection instance
         if let Some(waker) = connection.get_reader_waker().clone() {
@@ -241,14 +238,14 @@ fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t {
 // Hook read function to fill buffer with incoming data
 #[no_mangle]
 fn read(fd: c_int, buf: *mut c_void, count: size_t) -> ssize_t {
-    println!("{}","111");
+    println!("{}","111"); // debug
 
     let c_read: fn(d: c_int, buf: *const c_void, count: size_t) -> ssize_t =
         unsafe { transmute(fn_ptr("read")) };
 
     // Check if reading from a socket
     if let Some(connection) = unsafe { (*CONNECTIONS).get_mut(&(fd as u32)) } {
-        println!("{}",3);
+        println!("{}",3); // debug
         let buffer: &mut [u8] =
             unsafe { std::slice::from_raw_parts_mut(buf as *mut u8, count as usize) };
 
@@ -259,7 +256,7 @@ fn read(fd: c_int, buf: *mut c_void, count: size_t) -> ssize_t {
 
         data.len() as isize
     } else {
-        println!("{}",4);
+        println!("{}",4); // debug
         c_read(fd, buf, count)
     }
 }
