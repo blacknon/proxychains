@@ -110,7 +110,9 @@ fn is_proxy(addr: &SocketAddr) -> bool {
 // You can only use init function for initialization
 // Other codes must be written inside the spawned thread
 #[no_mangle]
-#[link_section = ".init_array"]
+#[cfg_attr(any(target_os = "linux", target_os = "android"), link_section = ".init_array")]
+#[cfg_attr(any(target_os = "macos", target_os = "ios"), link_section = "__DATA,__mod_init_func")]
+#[cfg_attr(windows, link_section = ".CRT$XCU")]
 pub static LD_PRELOAD_INITIALISE_RUST: extern "C" fn() = self::init;
 extern "C" fn init() {
     let singleton: HashMap<u32, Connection> = HashMap::new();
