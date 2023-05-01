@@ -69,6 +69,8 @@ async fn strict(
 ) -> Result<TcpStream, Box<dyn Error>> {
     let first = conf.proxies.get(0).unwrap();
     println!("{}",first.socket_addr.clone()); // debug
+    println!("{}",target_addr.clone()); // debug
+
     let mut stream = TcpStream::connect(first.socket_addr).await?;
     connect_with_stream(
         &mut stream,
@@ -90,6 +92,7 @@ async fn strict(
 
     Ok(stream)
 }
+
 // Get the next target address
 // If there's a proxy left in the chain, the next proxy address will be returned
 // If there's no proxy left, target address will be returned
